@@ -38,7 +38,7 @@ BUILDTAGS=$(RELEASE_TAG) $(TOR_TAG)
 default: all
 
 $(ZLIB_MAKEFILE):
-	cd $(ZLIB_PATH) && CCFLAGS="-fPIC"./configure
+	cd $(ZLIB_PATH) && CCFLAGS="-fPIC" ./configure
 	
 $(LIBZ): $(ZLIB_MAKEFILE)
 	$(MAKE) -C $(ZLIB_PATH)
@@ -65,7 +65,7 @@ $(LIBTOR): tor
 $(LIBCURVE): tor
 
 $(TOR_MAKEFILE):
-	cd $(TOR_PATH) && CCFLAGS="-fPIC" ./configure --enable-static-libevent --enable-static-zlib --with-libevent-dir=$(LIBEVENT_PATH) --with-zlib-dir=$(ZLIB_PATH) --enable-static-openssl --with-openssl-dir=$(OPENSSL_PATH)
+	cd $(TOR_PATH) && CCFLAGS="-fPIC" ./configure --enable-static-libevent --enable-static-zlib --with-libevent-dir=$(LIBEVENT_PATH)/.libs --with-zlib-dir=$(ZLIB_PATH) --enable-static-openssl --with-openssl-dir=$(OPENSSL_PATH)
 
 tor: $(TOR_MAKEFILE)
 	$(MAKE) -C $(TOR_PATH)
@@ -104,10 +104,10 @@ release-all: fmt release-client release-server release-discover
 all: fmt client server discover
 
 clean:
-	$(MAKE) -C $(ZLIB_PATH) clean
-	$(MAKE) -C $(OPENSSL_PATH) clean
-	$(MAKE) -C $(LIBEVENT_PATH) clean
-	$(MAKE) -C $(TOR_PATH) clean
+	$(MAKE) -C $(ZLIB_PATH) clean || true
+	$(MAKE) -C $(OPENSSL_PATH) clean || true
+	$(MAKE) -C $(LIBEVENT_PATH) clean || true
+	$(MAKE) -C $(TOR_PATH) clean || true
 	go clean -i -r shroud/...
 
 contributors:

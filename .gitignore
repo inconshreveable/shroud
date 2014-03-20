@@ -1,4 +1,7 @@
 *.swp
+*.o
+*.lo
+*.a
 bin/
 pkg/
 src/code.google.com
