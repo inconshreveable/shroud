@@ -3,10 +3,6 @@
  * Copyright (c) 2007-2013, The Tor Project, Inc. */
 /* See LICENSE for licensing information */
 
-/* Ordinarily defined in tor_main.c; this bit is just here to provide one
- * since we're not linking to tor_main.c */
-const char tor_git_revision[] = "";
-
 /**
  * \file test.c
  * \brief Unit tests for many pieces of the lower level Tor modules.
