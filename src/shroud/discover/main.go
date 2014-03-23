@@ -5,7 +5,7 @@ package discover
 import (
 	"flag"
 	"fmt"
-	"github.com/mikeg/dns"
+	"github.com/miekg/dns"
 	"io"
 	"net/http"
 	"strings"
