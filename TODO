@@ -1,13 +1,5 @@
-Commit code without anything built
-build shroud client on linux VM
-
-productionize discover app - supervisor + shroud
-Deploy sg proxy (/w key)
-
-Build example app /w TLS key
-
-man pages
-better -help output (with examples)
+test platform-independent makefile
+README
 
 Implement optional validity checks:
     - if you have a DNS TXT record, then shroud will check that it can complete a TLS connection with that cert
@@ -20,6 +12,9 @@ Open Qs:
     Regular heartbeat? Irregular heartbeat?
 
 Later:
+    man pages
+    make website
+    need signatures on downloadable binaries
     support proxies load-balancing to multiple clients (or single client with mutliple circuits)
     support a configuration file
     support multiple shrouded services with the same client
