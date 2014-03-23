@@ -8,6 +8,17 @@ import (
 	"strconv"
 )
 
+const explanation = `
+shroud exposes TLS services to the internet anonymously
+through Tor so that the location of the service can not
+be determined. Shroud requires that you first CNAME the
+DNS for the anonymous service's domain to a public shroud
+proxy server.
+
+shroud.io runs a set of proxy servers you may use so that
+you don't have to set up your own.
+`
+
 type Options struct {
 	configPath  string
 	proxyAddrs  string
@@ -22,14 +33,22 @@ type Options struct {
 
 func parseArgs() (*Options, error) {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "shroud [options] <domain> <port | address>")
+		fmt.Fprintf(os.Stderr, "Usage: shroud [options] <domain> <port|address>\n")
+		fmt.Fprintf(os.Stderr, explanation)
+
+		fmt.Fprintf(os.Stderr, "\nOPTIONS\n\n")
+		flag.PrintDefaults()
+
+		fmt.Fprintf(os.Stderr, "\nEXAMPLE\n\n")
+		fmt.Fprintf(os.Stderr, "shroud example.com 5050        Expose port 5050 anonymously for example.com's TLS traffic.\n")
+		fmt.Fprintf(os.Stderr, "\n")
 	}
 
 	logto := flag.String("log", "stdout", "File to log to or 'stdout' for console")
 	torAddr := flag.String(
 		"torAddr",
 		"",
-		"Address of the Tor SOCKS5 proxy port to use. If empty, shroud will start its own Tor relay")
+		"Address of the Tor SOCKS5 proxy port to use. If empty, shroud will start its own Tor instance")
 	tlsCrt := flag.String(
 		"tlsCrt",
 		"",
@@ -38,7 +57,7 @@ func parseArgs() (*Options, error) {
 		"tlsKey",
 		"",
 		"Optional path to a TLS private key to decrypt incoming traffic before forwarding to your local service. If empty, no decryption is attempted before forwarding.")
-	discoverUrl := flag.String("discoverUrl", "https://discover.v1.shroud.io/proxies", "URL to hit when starting up to discover the location of the proxy servers to use. You may skip this by setting it to the empty string and setting proxyAddrs explicitly.")
+	discoverUrl := flag.String("discoverUrl", "https://discover.v1.shroud.io/proxies", "URL to hit when starting up to discover the location of the proxy servers to use. You may skip this by setting proxyAddrs explicitly.")
 	proxyAddrs := flag.String("proxyAddrs", "", "Explicit comma-delimited list of public proxies to tunnel through. You probably want to auto-discover with the discoverUrl.")
 
 	flag.Parse()
@@ -59,7 +78,7 @@ func parseArgs() (*Options, error) {
 	}
 
 	if *discoverUrl != "" && *proxyAddrs != "" {
-		return nil, fmt.Errorf("You must specify only one of -discoverUrl and -proxyAddrs, not both.")
+		fmt.Printf("Warning: ignoring discoverUrl in favor of proxyAddrs\n")
 	}
 
 	return &Options{

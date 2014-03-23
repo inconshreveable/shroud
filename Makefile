@@ -21,10 +21,10 @@ LIBOR=$(TOR_PATH)/src/common/libor.a
 LIBZ=$(ZLIB_PATH)/libz.a
 LIBSSL=$(OPENSSL_PATH)/libssl.a
 LIBCRYPTO=$(OPENSSL_PATH)/libcrypto.a
-LIBEVENT=$(LIBEVENT_PATH)/.libs/libevent.a
+LIBEVENT=$(LIBEVENT_PATH)/build/lib/libevent.a
 ALL_LIBS=$(LIBZ) $(LIBSSL) $(LIBCRYPTO) $(LIBEVENT) $(LIBTOR) $(LIBCURVE) $(LIBOR_CRYPTO) $(LIBOR_EVENT) $(LIBOR)
 
-TOR?=1
+TOR?=0
 RELEASE_TAG?=debug
 TOR_TAG=tor
 
@@ -33,27 +33,37 @@ ifeq "$(TOR)" "0"
   TOR_TAG=
 endif
 
+# poor man's platform-specific rules, this obviously breaks windows
+OS=$(shell uname -s)
+OPENSSL_CONFIGURE="./config"
+CGO_LDFLAGS=-Wl,--start-group $(ALL_LIBS) -Wl,--end-group -Wl,-Bstatic -lm -lrt -Wl,-Bdynamic -lpthread -lc
+ifeq "$(OS)" "Darwin"
+	CGO_LDFLAGS=$(ALL_LIBS)
+	OPENSSL_CONFIGURE="./Configure darwin-x86_64-cc"
+endif
+
+
 BUILDTAGS=$(RELEASE_TAG) $(TOR_TAG)
 
 default: all
 
 $(ZLIB_MAKEFILE):
-	cd $(ZLIB_PATH) && CCFLAGS="-fPIC" ./configure
+	cd $(ZLIB_PATH) && CFLAGS="-fPIC" ./configure
 	
 $(LIBZ): $(ZLIB_MAKEFILE)
 	$(MAKE) -C $(ZLIB_PATH)
 
 $(LIBEVENT_MAKEFILE):
-	cd $(LIBEVENT_PATH) && CCFLAGS="-fPIC" ./configure --disable-shared --enable-static --with-pic
+	cd $(LIBEVENT_PATH) && ./configure --disable-shared --enable-static --with-pic --prefix=$(LIBEVENT_PATH)/build
 
 $(LIBEVENT): $(LIBEVENT_MAKEFILE)
-	$(MAKE) -C $(LIBEVENT_PATH)
+	$(MAKE) -C $(LIBEVENT_PATH) install
 
 $(LIBSSL): openssl
 $(LIBCRYPTO): openssl
 
 $(OPENSSL_MAKEFILE):
-	cd $(OPENSSL_PATH) && CCFLAGS="-fPIC" ./Configure darwin64-x86_64-cc no-shared no-dso 
+	cd $(OPENSSL_PATH) && ./Configure darwin64-x86_64-cc no-shared no-dso  -fPIC
 
 openssl: $(OPENSSL_MAKEFILE)
 	$(MAKE) -C $(OPENSSL_PATH)
@@ -65,7 +75,7 @@ $(LIBTOR): tor
 $(LIBCURVE): tor
 
 $(TOR_MAKEFILE):
-	cd $(TOR_PATH) && CCFLAGS="-fPIC" ./configure --enable-static-libevent --enable-static-zlib --with-libevent-dir=$(LIBEVENT_PATH)/.libs --with-zlib-dir=$(ZLIB_PATH) --enable-static-openssl --with-openssl-dir=$(OPENSSL_PATH)
+	cd $(TOR_PATH) && CFLAGS="-fPIC" ./configure --enable-static-libevent --enable-static-zlib --with-libevent-dir=$(LIBEVENT_PATH)/build --with-zlib-dir=$(ZLIB_PATH) --enable-static-openssl --with-openssl-dir=$(OPENSSL_PATH)
 
 tor: $(TOR_MAKEFILE)
 	$(MAKE) -C $(TOR_PATH)
@@ -88,7 +98,7 @@ server: godeps
 # until go 1.3 in that way. so instead we'll just pass the in via CGO_LDFLAGS
 # where at least we can resolve $GOPATH to get us absolute paths. it's a little hacky
 client: godeps $(ALL_LIBS)
-	CGO_LDFLAGS="$(ALL_LIBS)" go install -gcflags "-N -l" -tags '$(BUILDTAGS)' shroud/cmd/shroud
+	CGO_LDFLAGS="$(CGO_LDFLAGS)" go install -gcflags "-N -l" -tags '$(BUILDTAGS)' shroud/cmd/shroud
 
 release-client: RELEASE_TAG=release
 release-client: client

@@ -3,6 +3,7 @@ package client
 import (
 	"code.google.com/p/go.net/proxy"
 	"crypto/tls"
+	"flag"
 	"fmt"
 	"github.com/inconshreveable/go-tunnel/client"
 	"github.com/inconshreveable/go-tunnel/log"
@@ -30,7 +31,8 @@ func Main() {
 	// parse command line opts
 	opts, err := parseArgs()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		flag.Usage()
 		os.Exit(1)
 	}
 
@@ -75,8 +77,10 @@ func Main() {
 
 	// first, discover the location of the proxies
 	var proxyAddrs []string
-	if opts.discoverUrl != "" {
-
+	if opts.proxyAddrs != "" {
+		proxyAddrs = strings.Split(opts.proxyAddrs, ",")
+		fmt.Printf("Using explicit proxy addresses: %v\n", proxyAddrs)
+	} else {
 		// XXX: obviously services[0] doesn't work for multiple services
 		proxyAddrs, err = discoverProxies(services[0].domain, opts.discoverUrl, opts.torAddr)
 		if err != nil {
@@ -85,9 +89,6 @@ func Main() {
 		}
 		//proxyAddrs = []string{"0.us.proxy.v1.shroud.io:4443"}
 		fmt.Printf("Discovered public proxy servers at: %v\n", proxyAddrs)
-	} else {
-		proxyAddrs = strings.Split(opts.proxyAddrs, ",")
-		fmt.Printf("Using explicit proxy addresses: %v\n", proxyAddrs)
 	}
 
 	// establish a tunnel to each public proxy
@@ -159,7 +160,6 @@ func discoverProxies(domain, discoverUrl, torAddr string) ([]string, error) {
 	client := http.Client{Transport: &http.Transport{Dial: dialer.Dial, TLSClientConfig: tlsCfg}}
 
 	// issue the request
-	fmt.Printf("QUERY TO: %v", queryUrl.String())
 	resp, err := client.Get(queryUrl.String())
 	if err != nil {
 		return nil, fmt.Errorf("Failed to discover proxies: %v", err)
