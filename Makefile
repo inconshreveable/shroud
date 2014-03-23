@@ -39,7 +39,7 @@ OPENSSL_CONFIGURE="./config"
 CGO_LDFLAGS=-Wl,--start-group $(ALL_LIBS) -Wl,--end-group -Wl,-Bstatic -lm -lrt -Wl,-Bdynamic -lpthread -lc
 ifeq "$(OS)" "Darwin"
 	CGO_LDFLAGS=$(ALL_LIBS)
-	OPENSSL_CONFIGURE="./Configure darwin-x86_64-cc"
+	OPENSSL_CONFIGURE="./Configure darwin64-x86_64-cc"
 endif
 
 
@@ -63,7 +63,7 @@ $(LIBSSL): openssl
 $(LIBCRYPTO): openssl
 
 $(OPENSSL_MAKEFILE):
-	cd $(OPENSSL_PATH) && ./Configure darwin64-x86_64-cc no-shared no-dso  -fPIC
+	cd $(OPENSSL_PATH) && $(OPENSSL_CONFIGURE) no-shared no-dso -fPIC
 
 openssl: $(OPENSSL_MAKEFILE)
 	$(MAKE) -C $(OPENSSL_PATH)
