@@ -119,3 +119,6 @@ NB: Shrouded services are still at the mercy of the broken CA web of trust. If c
 1. Shrouded services do not use the Tor hidden service protocol and have no corresponding .onion address.
 1. Shroud proxies only allow connections to the shrouded services that are connected to them, they provide no reachability to traditional Tor hidden services.
 1. Because the shroud protocol runs *over* the traditional Tor network, it will also work on top of any other anonymity network with little or no modification.
+
+## License
+Apache
