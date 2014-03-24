@@ -10,6 +10,8 @@ Yes. Shrouded services are just like a Tor hidden service except that:
 1. Shrouded services do not have onion addresses, but just regular DNS-based hostnames. To a client, they look like any normal web service.
 1. Shrouded services typically have lower latency than Tor hidden services.
 
+Even though shroud does not use the Tor hidden service protocol, it *does* rely on Tor for providing anonymity to shrouded services.
+
 ## How do I run a shrouded service?
 
 Running a shrouded service is pretty easy! To run a shrouded service on port 5555 for example.com, here are the steps:
@@ -61,7 +63,7 @@ If the service you're running on port 5555 is capable of terminating TLS traffic
 
 shroud is fundamentally based on the same tunneling technology as ngrok and srvdir. A shroud client establishes a persistent connection to a public proxy over Tor. That connection is multiplexed to transmit each incoming connection as a separate stream over the persistent connection. The public proxies determine which backend shroud service to route traffic to by inspecting the hostname present in the TLS SNI extension for each incoming TLS connection.
 
-For understanding more about how the tunneling works, you can look at the documentation of the libraries [go-tunnel](github.com/inconshreveable/go-tunnel) and [muxado](github.com/inconshreveable/muxado) which provide the primitives that enable this behavior.
+For understanding more about how the tunneling works, you can look at the documentation of the libraries [go-tunnel](https://github.com/inconshreveable/go-tunnel) and [muxado](https://github.com/inconshreveable/muxado) which provide the primitives that enable this behavior.
 
 For those of you who are familiar with ngrok and other localhost-tunneling services which allow you to receive connections to services running on machines behind NATs, you can intuitively understand how shroud works by just thinking of Tor as a NAT. Tor is a large, decentralized, encrypted, onion-routed NAT. Tor clients can establish connections out to the public internet, but no connections can be made into the network. shroud circumvents this limitation by making a single connection out of the Tor network and relaying all inbound traffic over that connection.
 
@@ -81,7 +83,11 @@ I need to modify the code to use "snakeoil" TLS certificates and keys when compi
 
 ## FAQ
 
-#### I already have Tor installed, can I tell shroud to use that instead of start its own?
+#### Do I need to install Tor?
+
+*No.* Shroud is distributed as a single binary with all of its dependencies compiled in, including Tor (on Linux and OS X), so you don't need to worry about installing anything else. If you've already got Tor installed, though, don't worry, that's OK too, see the next question.
+
+#### I already have Tor installed, can I tell shroud to use that instead of starting its own?
 
 *Yes.* Just pass the -torAddr switch to shroud and it will skip starting Tor and instead use the one at the provided address. By default, Tor's SOCKS5 proxy runs on port 9050, so you'll probably want the switch to look like this:
 
