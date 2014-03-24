@@ -3,7 +3,7 @@
 package client
 
 /*
-#cgo CFLAGS: -Icdeps/tor-0.2.4.21/ -Icdeps/tor-0.2.4.21/src/common/ -Icdeps/tor-0.2.4.21/src/or -Icdeps/tor-0.2.4.21/src/ext/
+#cgo CFLAGS: -Icdeps/libevent-2.0.21-stable/build/include/ -Icdeps/tor-0.2.4.21/ -Icdeps/tor-0.2.4.21/src/common/ -Icdeps/tor-0.2.4.21/src/or -Icdeps/tor-0.2.4.21/src/ext/
 #include "or.h"
 #include "main.h"
 */
