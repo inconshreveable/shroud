@@ -1,12 +1,12 @@
 .PHONY: default server client godeps fmt clean all release-all release-server release-client contributors tor openssl
 export GOPATH:=$(shell pwd)
 
-C_DEPS_PATH=$(GOPATH)/src/shroud/client/cdeps
+VENDOR_PATH=$(GOPATH)/src/vendor
 
-TOR_PATH=$(C_DEPS_PATH)/tor-0.2.4.21
-OPENSSL_PATH=$(C_DEPS_PATH)/openssl-1.0.1f
-ZLIB_PATH=$(C_DEPS_PATH)/zlib-1.2.8
-LIBEVENT_PATH=$(C_DEPS_PATH)/libevent-2.0.21-stable
+TOR_PATH=$(VENDOR_PATH)/tor-0.2.4.21
+OPENSSL_PATH=$(VENDOR_PATH)/openssl-1.0.1f
+ZLIB_PATH=$(VENDOR_PATH)/zlib-1.2.8
+LIBEVENT_PATH=$(VENDOR_PATH)/libevent-2.0.21-stable
 
 TOR_MAKEFILE=$(TOR_PATH)/Makefile
 OPENSSL_MAKEFILE=$(OPENSSL_PATH)/Makefile
@@ -35,11 +35,11 @@ endif
 
 # poor man's platform-specific rules, this obviously breaks windows
 OS=$(shell uname -s)
-OPENSSL_CONFIGURE="./config"
+OPENSSL_CONFIGURE=./config
 CGO_LDFLAGS=-Wl,--start-group $(ALL_LIBS) -Wl,--end-group -Wl,-Bstatic -lm -lrt -Wl,-Bdynamic -lpthread -lc
 ifeq "$(OS)" "Darwin"
 	CGO_LDFLAGS=$(ALL_LIBS)
-	OPENSSL_CONFIGURE="./Configure darwin64-x86_64-cc"
+	OPENSSL_CONFIGURE=./Configure darwin64-x86_64-cc
 endif
 
 
@@ -113,12 +113,14 @@ release-all: fmt release-client release-server release-discover
 
 all: fmt client server discover
 
-clean:
+goclean:
+	go clean -i -r shroud/...
+
+clean: goclean
 	$(MAKE) -C $(ZLIB_PATH) clean || true
 	$(MAKE) -C $(OPENSSL_PATH) clean || true
 	$(MAKE) -C $(LIBEVENT_PATH) clean || true
 	$(MAKE) -C $(TOR_PATH) clean || true
-	go clean -i -r shroud/...
 
 contributors:
 	echo "Contributors to shroud:\n" > CONTRIBUTORS
