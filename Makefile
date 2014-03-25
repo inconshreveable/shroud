@@ -75,7 +75,7 @@ $(LIBTOR): tor
 $(LIBCURVE): tor
 
 $(TOR_MAKEFILE):
-	cd $(TOR_PATH) && CFLAGS="-fPIC" ./configure --enable-static-libevent --enable-static-zlib --with-libevent-dir=$(LIBEVENT_PATH)/build --with-zlib-dir=$(ZLIB_PATH) --enable-static-openssl --with-openssl-dir=$(OPENSSL_PATH)
+	cd $(TOR_PATH) && CFLAGS="-fPIC" ./configure --enable-static-libevent --enable-static-zlib --with-libevent-dir=$(LIBEVENT_PATH)/build --with-zlib-dir=$(ZLIB_PATH) --enable-static-openssl --with-openssl-dir=$(OPENSSL_PATH) --disable-asciidoc
 
 tor: $(TOR_MAKEFILE)
 	$(MAKE) -C $(TOR_PATH)

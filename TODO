@@ -1,10 +1,11 @@
-give you option to skip CNAME validation check
-README
 need an easy way to develop between client/server
 expand the development section of the README
-expand the 'how does it work' section of the readme
+expand the 'how does it work' section of the readme with diagrams and a more detailed explanation
+give you option to skip CNAME validation check
+talk about the shroud.io service?
+write more explicit threat model
 
-Implement optional validity checks:
+Implement optional validity check:
     - if you have a DNS TXT record, then shroud will check that it can complete a TLS connection with that cert
 
 Open Qs:

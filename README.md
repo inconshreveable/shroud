@@ -2,7 +2,7 @@
 
 Shroud provides a mechanism to run a website that is accessible to any client connected to the internet but whose IP address (and thus network provider and location) is anonymized completely and can not be discovered by any intermediary. Henceforth in this document, I will refer to a service hidden by shroud as a **shrouded service**.
 
-#### So it's like a Tor Hidden Service?
+#### So it's like Tor hidden services?
 
 Yes. Shrouded services are just like a Tor hidden service except that:
 
@@ -11,6 +11,24 @@ Yes. Shrouded services are just like a Tor hidden service except that:
 1. Shrouded services typically have lower latency than Tor hidden services.
 
 Even though shroud does not use the Tor hidden service protocol, it *does* rely on Tor for providing anonymity to shrouded services.
+
+## Download
+
+Pre-compiled binaries are available for all three major operatings systems. 
+
+- [Linux](http://dl.shroud.io/linux_386/dev/shroud.zip)
+- [OS X](http://dl.shroud.io/darwin_amd64/dev/shroud.zip)
+- [Windows](http://dl.shroud.io/windows_386/dev/shroud.zip) (requires separate tor installation)
+
+#### DISCLAIMER
+*THESE DOWNLOADS ARE FOR EXPERIMENTAL PURPOSES ONLY*.
+
+- All of these binaries are delivered insecurely over HTTP.
+- They are not signed.
+- Shroud is an alpha-stage project and may contain serious flaws.
+- Shroud has not been audited or peer-reviewed.
+
+You should compile a client from source yourself!
 
 ## How do I run a shrouded service?
 
@@ -85,21 +103,21 @@ I need to modify the code to use "snakeoil" TLS certificates and keys when compi
 
 #### Do I need to install Tor?
 
-*No.* Shroud is distributed as a single binary with all of its dependencies compiled in, including Tor (on Linux and OS X), so you don't need to worry about installing anything else. If you've already got Tor installed, though, don't worry, that's OK too, see the next question.
+**No.** Shroud is distributed as a single binary with all of its dependencies compiled in, including Tor (on Linux and OS X), so you don't need to worry about installing anything else. If you've already got Tor installed, though, don't worry, that's OK too, see the next question.
 
 #### I already have Tor installed, can I tell shroud to use that instead of starting its own?
 
-*Yes.* Just pass the -torAddr switch to shroud and it will skip starting Tor and instead use the one at the provided address. By default, Tor's SOCKS5 proxy runs on port 9050, so you'll probably want the switch to look like this:
+**Yes.** Just pass the -torAddr switch to shroud and it will skip starting Tor and instead use the one at the provided address. By default, Tor's SOCKS5 proxy runs on port 9050, so you'll probably want the switch to look like this:
 
     ./shroud -torAddr="127.0.0.1:9050" example.com 5555
 
 #### Can I run non-HTTP services over shroud?
 
-*Yes.* You can run any TCP service over shroud so long as you access it via TLS and any clients you support connecting to your shrouded services support setting the TLS SNI extension.
+**Yes.** You can run any TCP service over shroud so long as you access it via TLS and any clients you support connecting to your shrouded services support setting the TLS SNI extension.
 
 #### Can I run my own shroud public proxies instead of using the ones provided by shroud.io?
 
-Yes. The source code for the shroud public proxy is under src/server. You can build a public shroud proxy with the command:
+**Yes.** The source code for the shroud public proxy is under src/server. You can build a public shroud proxy with the command:
 
     make server
 
@@ -107,18 +125,18 @@ Even though building the server is easy, getting everything to work is a bit mor
 
 #### Can I run shroud on Windows?
 
-*Yes.* Shroud will work properly on Windows, but I haven't yet done the work to build a version of shroud for Windows with Tor compiled in. If you want to run shroud on Windows, you'll need to first download and run Tor and then point shroud at your running Tor with the -torAddr switch.
+**Yes.** Shroud will work properly on Windows, but I haven't yet done the work to build a version of shroud for Windows with Tor compiled in. If you want to run shroud on Windows, you'll need to first download and run Tor and then point shroud at your running Tor with the -torAddr switch.
 
 #### So can't these public proxies just man-in-the-middle connections to shrouded services?
 
-*No.* All traffic to shrouded services are encrypted with TLS *with keys to the domain that only the service provider controls*. This means that the shroud public proxies can not inspect or modify traffic to shrouded services.
+**No.** All traffic to shrouded services are encrypted with TLS *with keys to the domain that only the service provider controls*. This means that the shroud public proxies can not inspect or modify traffic to shrouded services.
 
 NB: A misbehaving shroud proxy could drop traffic to a shrouded service.
 
 NB: Shrouded services are still at the mercy of the broken CA web of trust. If clients do not practice certificate pinning, a misbehaving shroud proxy controlled by someone who can issue certificates trusted by browsers could MITM traffic.
 
 #### You know about Tor2Web right? Isn't this the same thing?
-*It's similar.* Shroud differs from Tor2Web in a few important and subtle ways:
+**It's similar.** Shroud differs from Tor2Web in a few important and subtle ways:
 
 1. Shrouded services are accessed by going directly to their public domain name unlike tor2web addresses which are subdomains
 1. Shroud proxies do not and cannot inspect any of the traffic that they proxy to shrouded services because all proxied traffic is TLS encrypted with keys that the proxy does not control.
