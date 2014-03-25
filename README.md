@@ -4,7 +4,7 @@ Shroud provides a mechanism to run a website that is accessible to any client co
 
 #### So it's like Tor hidden services?
 
-Yes. Shrouded services are just like a Tor hidden service except that:
+Yes. Shrouded services are just like Tor hidden services except that:
 
 1. Unlike a Tor hidden service, clients do not need to run Tor to access a shrouded service.
 1. Shrouded services do not have onion addresses, but just regular DNS-based hostnames. To a client, they look like any normal web service.
@@ -133,7 +133,7 @@ Even though building the server is easy, getting everything to work is a bit mor
 
 NB: A misbehaving shroud proxy could drop traffic to a shrouded service.
 
-NB: Shrouded services are still at the mercy of the broken CA web of trust. If clients do not practice certificate pinning, a misbehaving shroud proxy controlled by someone who can issue certificates trusted by browsers could MITM traffic.
+NB: Shrouded services that rely on CA-signed certs are still at the mercy of the broken CA web of trust. If clients do not practice certificate pinning, a misbehaving shroud proxy controlled by someone who can issue certificates trusted by browsers could MITM traffic.
 
 #### You know about Tor2Web right? Isn't this the same thing?
 **It's similar.** Shroud differs from Tor2Web in a few important and subtle ways:
