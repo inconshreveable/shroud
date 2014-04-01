@@ -6,11 +6,11 @@ Shroud provides a mechanism to run a website that is accessible to any client co
 
 Yes. Shrouded services are just like Tor hidden services except that:
 
-1. Unlike a Tor hidden service, clients do not need to run Tor to access a shrouded service.
 1. Shrouded services do not have onion addresses, but just regular DNS-based hostnames. To a client, they look like any normal web service.
-1. Shrouded services typically have lower latency than Tor hidden services.
+1. Unlike a Tor hidden service, clients do not need to run Tor to access a shrouded service.
+1. Shrouded services have lower latencies than Tor hidden services (anecdotally).
 
-Even though shroud does not use the Tor hidden service protocol, it *does* rely on Tor for providing anonymity to shrouded services.
+Even though shroud does not use the Tor hidden service protocol, it *does* rely on Tor for providing anonymity to shrouded services, but does so with *zero protocol changes* to Tor itself.
 
 ## Download
 
