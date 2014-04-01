@@ -85,6 +85,9 @@ For understanding more about how the tunneling works, you can look at the docume
 
 For those of you who are familiar with ngrok and other localhost-tunneling services which allow you to receive connections to services running on machines behind NATs, you can intuitively understand how shroud works by just thinking of Tor as a NAT. Tor is a large, decentralized, encrypted, onion-routed NAT. Tor clients can establish connections out to the public internet, but no connections can be made into the network. shroud circumvents this limitation by making a single connection out of the Tor network and relaying all inbound traffic over that connection.
 
+Do you want to know more? There is a more detailed document on shroud's architecture here:
+[Shroud Architecture Document](docs/ARCHITECTURE.md)
+
 ## Development
 
 #### How do I build the shroud client?
