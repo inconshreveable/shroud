@@ -4,7 +4,7 @@ export GOPATH:=$(shell pwd)
 VENDOR_PATH=$(GOPATH)/src/vendor
 
 TOR_PATH=$(VENDOR_PATH)/tor-0.2.4.21
-OPENSSL_PATH=$(VENDOR_PATH)/openssl-1.0.1f
+OPENSSL_PATH=$(VENDOR_PATH)/openssl-1.0.1g
 ZLIB_PATH=$(VENDOR_PATH)/zlib-1.2.8
 LIBEVENT_PATH=$(VENDOR_PATH)/libevent-2.0.21-stable
 
